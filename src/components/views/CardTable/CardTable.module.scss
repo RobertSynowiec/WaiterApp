@@ -1,0 +1,12 @@
+.row {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    margin: 2rem 0;
+    border-bottom: 1px solid gray;
+    padding: 2rem 0;
+}
+.bottom{
+    display: flex;
+    justify-content: end;
+}

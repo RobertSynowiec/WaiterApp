@@ -1,4 +1,9 @@
+import { createSelector } from 'reselect';
+
 //selectors
+const selectTables = state => state.tables;
+
+export const getAllTables = createSelector([selectTables], tables => tables);
 
 // actions
 const createActionName = actionName => `app/tables/${actionName}`;
