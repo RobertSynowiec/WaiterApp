@@ -5,8 +5,18 @@ import Home from './components/pages/Home/Home';
 import Table from './components/views/Table/Table';
 import NavBar from './components/views/NavBar/NavBar';
 import Footer from './components/views/Footer/Footer';
+import { fetchTables } from './redux/tablesRedux';
+import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { fetchStatus } from './redux/tableStatus'
 
-function App() {
+
+const App = () => {
+  const dispatch = useDispatch();
+  useEffect(() => dispatch(fetchTables()), [dispatch]);
+  useEffect(() => dispatch(fetchStatus()), [dispatch]);
+
+
   return (
     <main>
       <Container>

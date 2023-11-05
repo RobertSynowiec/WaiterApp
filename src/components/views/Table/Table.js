@@ -1,21 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button, Row, Col } from 'react-bootstrap';
-import { useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
 import { getAllTables } from '../../../redux/tablesRedux';
 import { getAllStatus } from '../../../redux/tableStatus';
+import { editTablesRequest } from '../../../redux/tablesRedux';
 
 const Table = () => {
     const { id } = useParams();
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
     const allTables = useSelector(getAllTables);
     const allStatus = useSelector(getAllStatus);
     const [status, setStatus] = useState('');
     const [peopleAmount, setPeopleAmount] = useState('');
-    console.log('peopleAmount ', peopleAmount)
     const [maxPeopleAmount, setMaxPeopleAmount] = useState('');
     const [bill, setBill] = useState('');
     const MinPeople = 0;
     const MaxPeople = 10;
+
+    const updatedData = {
+        status,
+        peopleAmount,
+        maxPeopleAmount,
+        bill,
+    };
+
+    const handleUpdate = e => {
+        e.preventDefault();
+        dispatch(editTablesRequest(id, updatedData));
+        navigate('/')
+    };
 
     useEffect(() => {
         if (allTables && allTables.length > 0) {
@@ -64,10 +79,6 @@ const Table = () => {
         setBill(e.target.value);
     };
 
-    const handleUpdate = () => {
-        // add Update Redux
-
-    };
 
     return (
         <Form className="w-100">
@@ -85,7 +96,7 @@ const Table = () => {
             </Form.Group>
             <Form.Group style={{ marginBottom: '20px' }} as={Row}>
                 <Form.Label style={{ fontWeight: 'bolder' }} column sm={1}>People:</Form.Label>
-                <Col sm={2}>
+                <Col sm={3}>
                     <div style={{ display: 'flex' }}>
                         <Form.Control
                             type="text"
@@ -108,7 +119,7 @@ const Table = () => {
 
             <Form.Group style={{ marginBottom: '20px' }} as={Row} controlId="bill" hidden={status !== 'Busy'}>
                 <Form.Label style={{ fontWeight: 'bolder' }} column sm={1}>Bill:</Form.Label>
-                <Col sm={1}>
+                <Col sm={2}>
                     <div style={{ display: 'flex' }}>
                         <span style={{ margin: 'auto 5px auto 0' }}>$</span>
                         <div className="input-group">
