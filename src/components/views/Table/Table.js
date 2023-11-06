@@ -1,22 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button, Row, Col } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
-import { getAllTables } from '../../../redux/tablesRedux';
+import { useNavigate, useParams, Navigate } from 'react-router-dom';
+import { getTableById, editTablesRequest } from '../../../redux/tablesRedux';
 import { getAllStatus } from '../../../redux/tableStatus';
-import { editTablesRequest } from '../../../redux/tablesRedux';
-import { Navigate } from 'react-router-dom';
 
 const Table = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const singleTable = useSelector(state => getTableById(state, id));
     const dispatch = useDispatch();
-    const allTables = useSelector(getAllTables);
     const allStatus = useSelector(getAllStatus);
-    const [status, setStatus] = useState('');
-    const [peopleAmount, setPeopleAmount] = useState('');
-    const [maxPeopleAmount, setMaxPeopleAmount] = useState('');
-    const [bill, setBill] = useState('');
+
+    const initialStatus = singleTable && singleTable.status ? singleTable.status : '';
+    const initialPeopleAmount = singleTable && singleTable.peopleAmount ? singleTable.peopleAmount : '';
+    const initialMaxPeopleAmount = singleTable && singleTable.maxPeopleAmount ? singleTable.maxPeopleAmount : '';
+    const initialBill = singleTable && singleTable.bill ? singleTable.bill : '';
+    console.log('initialBill', initialBill)
+
+    const [status, setStatus] = useState(initialStatus || '');
+    const [peopleAmount, setPeopleAmount] = useState(initialPeopleAmount || '');
+    const [maxPeopleAmount, setMaxPeopleAmount] = useState(initialMaxPeopleAmount || '');
+    const [bill, setBill] = useState(initialBill || '');
+    console.log('bill ', bill)
     const MinPeople = 0;
     const MaxPeople = 10;
 
@@ -26,25 +32,13 @@ const Table = () => {
         maxPeopleAmount,
         bill,
     };
+    console.log('updatedData ', updatedData)
 
     const handleUpdate = e => {
         e.preventDefault();
         dispatch(editTablesRequest(id, updatedData));
         navigate('/')
     };
-
-    useEffect(() => {
-        if (allTables && allTables.length > 0) {
-            const singleTable = allTables.find(table => table.id === id);
-
-            if (singleTable) {
-                setStatus(singleTable.status || '');
-                setPeopleAmount(singleTable.peopleAmount || '');
-                setMaxPeopleAmount(singleTable.maxPeopleAmount || '');
-                setBill(singleTable.bill || '');
-            }
-        }
-    }, [allTables, id]);
 
     useEffect(() => {
         if (status === 'Busy') {
@@ -79,7 +73,8 @@ const Table = () => {
     const handleBillChange = (e) => {
         setBill(e.target.value);
     };
-    if (!allTables || allTables.length === 0) return <Navigate to="/" />;
+
+    if (!singleTable || singleTable.length === 0) return <Navigate to="/" />;
 
     return (
         <Form className="w-100">

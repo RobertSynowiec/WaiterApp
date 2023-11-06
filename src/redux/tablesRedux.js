@@ -1,10 +1,15 @@
 import { createSelector } from 'reselect';
-import API_URL from '../config'
+import { API_URL } from '../config'
 
 //selectors
 const selectTables = state => state.tables;
+const selectTableId = (state, id) => id;
 
 export const getAllTables = createSelector([selectTables], tables => tables);
+export const getTableById = createSelector(
+    [selectTables, selectTableId],
+    (tables, id) => tables.find(table => table.id === id)
+);
 
 // actions
 const createActionName = actionName => `app/tables/${actionName}`;
@@ -16,7 +21,7 @@ export const updateLocalTables = payload => ({ type: UPDATE_LOCAL_TABLES, payloa
 
 export const fetchTables = () => {
     return (dispatch) => {
-        fetch('http://localhost:3131/api/tables')
+        fetch(`${API_URL}/tables`)
             .then(res => res.json())
             .then(tables => dispatch(updateLocalTables(tables)));
     }
@@ -34,7 +39,7 @@ export const editTablesRequest = (id, newEditTables) => {
             body: JSON.stringify(newEditTables),
         };
 
-        fetch(`http://localhost:3131/api/tables/${id}`, options)
+        fetch(`${API_URL}/tables/${id}`, options)
             .then(newEditTables => dispatch(editTables(newEditTables)))
     }
 }
