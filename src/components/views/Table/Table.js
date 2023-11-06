@@ -5,6 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { getAllTables } from '../../../redux/tablesRedux';
 import { getAllStatus } from '../../../redux/tableStatus';
 import { editTablesRequest } from '../../../redux/tablesRedux';
+import { Navigate } from 'react-router-dom';
 
 const Table = () => {
     const { id } = useParams();
@@ -78,7 +79,7 @@ const Table = () => {
     const handleBillChange = (e) => {
         setBill(e.target.value);
     };
-
+    if (!allTables || allTables.length === 0) return <Navigate to="/" />;
 
     return (
         <Form className="w-100">
